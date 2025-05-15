@@ -1,10 +1,9 @@
 from ninja import NinjaAPI
-from ninja_jwt.controller import NinjaJWTDefaultController
+from ninja_jwt.authentication import JWTAuth
 from .auth import auth
 from .jobs import jobs
 
-api = NinjaAPI()
-api.add_controller(NinjaJWTDefaultController)
+api = NinjaAPI(auth=JWTAuth())
 
 api.add_router("/auth/", auth)
 api.add_router("/jobs/", jobs)

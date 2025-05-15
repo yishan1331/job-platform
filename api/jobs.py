@@ -2,7 +2,7 @@ from ninja import Router, Query
 from typing import List, Optional
 from datetime import datetime
 from .models import JobPosting, Company
-from .schemas import JobPostingCreate, JobPostingUpdate, JobPostingOut, JobPostingList, Error
+from .schemas import JobPostingCreate, JobPostingUpdate, JobPostingOut, Error
 from ninja.pagination import paginate
 from django.shortcuts import get_object_or_404
 from uuid import UUID
@@ -23,7 +23,7 @@ def create_job(request, payload: JobPostingCreate):
     except Exception as e:
         return 400, {"message": str(e)}
 
-@jobs.get("", response=JobPostingList)
+@jobs.get("", response=List[JobPostingOut])
 @paginate
 def list_jobs(
     request,

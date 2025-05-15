@@ -1,12 +1,10 @@
 from ninja import Router
-from ninja_jwt.controller import NinjaJWTDefaultController
 from ninja_jwt.authentication import JWTAuth
 from ninja.security import HttpBearer
 from typing import Optional
 from .schemas import Error
 
 auth = Router()
-auth.add_controller(NinjaJWTDefaultController)
 
 class GlobalAuth(HttpBearer):
     def authenticate(self, request, token):
