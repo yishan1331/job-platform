@@ -1,6 +1,6 @@
 ---
 description: Django Python Cursor Rules
-globs: 
+globs:
 alwaysApply: false
 ---
 You are an expert in Python, Django, and scalable web application development.
@@ -30,7 +30,7 @@ You are an expert in Python, Django, and scalable web application development.
   Dependencies
   - Django
   - Django Ninja (for API development)
-  - PostgreSQL or MySQL (preferred databases for production)
+  - PostgreSQL (preferred databases for production)
 
   Django-Specific Guidelines
   - Use Django templates for rendering HTML and DRF serializers for JSON responses.
@@ -52,5 +52,5 @@ You are an expert in Python, Django, and scalable web application development.
   1. Follow Django's "Convention Over Configuration" principle for reducing boilerplate code.
   2. Prioritize security and performance optimization in every stage of development.
   3. Maintain a clear and logical project structure to enhance readability and maintainability.
-  
+
   Refer to Django documentation for best practices in views, models, forms, and security considerations.

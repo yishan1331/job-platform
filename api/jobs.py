@@ -1,29 +1,38 @@
 from ninja import Router, Query
 from typing import List, Optional
 from datetime import datetime
+from django.shortcuts import get_object_or_404
 from .models import JobPosting, Company
 from .schemas import JobPostingCreate, JobPostingUpdate, JobPostingOut, Error
 from ninja.pagination import paginate
-from django.shortcuts import get_object_or_404
 from uuid import UUID
 
-jobs = Router()
+jobs = Router(tags=["Jobs"])
 
-@jobs.post("", response={201: JobPostingOut, 400: Error})
+@jobs.post("", response={201: JobPostingOut, 400: Error}, summary="Create a Job")
 def create_job(request, payload: JobPostingCreate):
     try:
-        company = get_object_or_404(Company, id=payload.company_id)
+        company = get_object_or_404(Company, id=payload.company_id, is_active=True)
         job = JobPosting.objects.create(
-            **payload.dict(),
+            title=payload.title,
+            description=payload.description,
+            location=payload.location,
+            salary_range=payload.salary_range,
+            salary_type=payload.salary_type,
+            required_skills=payload.required_skills,
+            posting_date=payload.posting_date,
+            expiration_date=payload.expiration_date,
+            apply_url=payload.apply_url,
+            type=payload.type,
             company=company,
-            created_by=request.auth,
-            modified_by=request.auth
+            created_by=company.owner,
+            modified_by=company.owner
         )
         return 201, job
     except Exception as e:
         return 400, {"message": str(e)}
 
-@jobs.get("", response=List[JobPostingOut])
+@jobs.get("", response=List[JobPostingOut], summary="Get Job List")
 @paginate
 def list_jobs(
     request,
@@ -62,32 +71,25 @@ def list_jobs(
 
     return queryset
 
-@jobs.get("/{job_id}", response={200: JobPostingOut, 404: Error})
+@jobs.get("/{job_id}", response={200: JobPostingOut, 404: Error}, summary="Get a Job")
 def get_job(request, job_id: UUID):
     job = get_object_or_404(JobPosting, id=job_id, is_active=True)
     return job
 
-@jobs.put("/{job_id}", response={200: JobPostingOut, 400: Error, 404: Error})
+@jobs.put("/{job_id}", response={200: JobPostingOut, 400: Error, 404: Error}, summary="Update a Job")
 def update_job(request, job_id: UUID, payload: JobPostingUpdate):
-    job = get_object_or_404(JobPosting, id=job_id, is_active=True)
+    try:
+        job = get_object_or_404(JobPosting, id=job_id, is_active=True)
+        for key, value in payload.dict(exclude_unset=True).items():
+            setattr(job, key, value)
+        job.save()
+        return job
+    except Exception as e:
+        return 400, {"message": str(e)}
 
-    if job.created_by != request.auth:
-        return 400, {"message": "You don't have permission to update this job"}
-
-    for attr, value in payload.dict(exclude_unset=True).items():
-        setattr(job, attr, value)
-
-    job.modified_by = request.auth
-    job.save()
-    return job
-
-@jobs.delete("/{job_id}", response={204: None, 400: Error, 404: Error})
+@jobs.delete("/{job_id}", response={204: None, 404: Error}, summary="Delete a Job")
 def delete_job(request, job_id: UUID):
     job = get_object_or_404(JobPosting, id=job_id, is_active=True)
-
-    if job.created_by != request.auth:
-        return 400, {"message": "You don't have permission to delete this job"}
-
     job.is_active = False
     job.save()
     return 204, None
