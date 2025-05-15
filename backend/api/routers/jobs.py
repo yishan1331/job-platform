@@ -1,15 +1,18 @@
-from ninja import Router, Query
+from ninja import Router
 from typing import List, Optional
 from datetime import datetime
 from django.shortcuts import get_object_or_404
-from .models import JobPosting, Company
-from .schemas import JobPostingCreate, JobPostingUpdate, JobPostingOut, Error
 from ninja.pagination import paginate
 from uuid import UUID
 
+from ..models.company import Company
+from ..models.job import JobPosting
+from ..schemas.jobs import JobPostingCreate, JobPostingUpdate, JobPostingOut
+from ..schemas.common import ErrorResponse
+
 jobs = Router(tags=["Jobs"])
 
-@jobs.post("", response={201: JobPostingOut, 400: Error}, summary="Create a Job")
+@jobs.post("", response={201: JobPostingOut, 400: ErrorResponse}, summary="Create a Job")
 def create_job(request, payload: JobPostingCreate):
     try:
         company = get_object_or_404(Company, id=payload.company_id, is_active=True)
@@ -71,12 +74,12 @@ def list_jobs(
 
     return queryset
 
-@jobs.get("/{job_id}", response={200: JobPostingOut, 404: Error}, summary="Get a Job")
+@jobs.get("/{job_id}", response={200: JobPostingOut, 404: ErrorResponse}, summary="Get a Job")
 def get_job(request, job_id: UUID):
     job = get_object_or_404(JobPosting, id=job_id, is_active=True)
     return job
 
-@jobs.put("/{job_id}", response={200: JobPostingOut, 400: Error, 404: Error}, summary="Update a Job")
+@jobs.put("/{job_id}", response={200: JobPostingOut, 400: ErrorResponse, 404: ErrorResponse}, summary="Update a Job")
 def update_job(request, job_id: UUID, payload: JobPostingUpdate):
     try:
         job = get_object_or_404(JobPosting, id=job_id, is_active=True)
@@ -87,7 +90,7 @@ def update_job(request, job_id: UUID, payload: JobPostingUpdate):
     except Exception as e:
         return 400, {"message": str(e)}
 
-@jobs.delete("/{job_id}", response={204: None, 404: Error}, summary="Delete a Job")
+@jobs.delete("/{job_id}", response={204: None, 404: ErrorResponse}, summary="Delete a Job")
 def delete_job(request, job_id: UUID):
     job = get_object_or_404(JobPosting, id=job_id, is_active=True)
     job.is_active = False
