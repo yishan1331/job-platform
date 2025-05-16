@@ -1,18 +1,22 @@
-from ninja import Router
-from typing import List, Optional
 from datetime import datetime
-from django.shortcuts import get_object_or_404
-from ninja.pagination import paginate
+from typing import Optional
 from uuid import UUID
+
+from django.shortcuts import get_object_or_404
+from ninja import Router
+from ninja.pagination import paginate
 
 from ..models.company import Company
 from ..models.job import JobPosting
-from ..schemas.jobs import JobPostingCreate, JobPostingUpdate, JobPostingOut
 from ..schemas.common import ErrorResponse
+from ..schemas.jobs import JobPostingCreate, JobPostingOut, JobPostingUpdate
 
 jobs = Router(tags=["Jobs"])
 
-@jobs.post("", response={201: JobPostingOut, 400: ErrorResponse}, summary="Create a Job")
+
+@jobs.post(
+    "", response={201: JobPostingOut, 400: ErrorResponse}, summary="Create a Job"
+)
 def create_job(request, payload: JobPostingCreate):
     try:
         company = get_object_or_404(Company, id=payload.company_id, is_active=True)
@@ -29,13 +33,14 @@ def create_job(request, payload: JobPostingCreate):
             type=payload.type,
             company=company,
             created_by=company.owner,
-            modified_by=company.owner
+            modified_by=company.owner,
         )
         return 201, job
     except Exception as e:
         return 400, {"message": str(e)}
 
-@jobs.get("", response=List[JobPostingOut], summary="Get Job List")
+
+@jobs.get("", response=list[JobPostingOut], summary="Get Job List")
 @paginate
 def list_jobs(
     request,
@@ -46,21 +51,16 @@ def list_jobs(
     queryset = JobPosting.objects.filter(is_active=True)
 
     if search:
-        queryset = queryset.filter(
-            title__icontains=search
-        ) | queryset.filter(
-            description__icontains=search
-        ) | queryset.filter(
-            company__name__icontains=search
+        queryset = (
+            queryset.filter(title__icontains=search)
+            | queryset.filter(description__icontains=search)
+            | queryset.filter(company__name__icontains=search)
         )
 
     if status:
         now = datetime.now()
         if status == "active":
-            queryset = queryset.filter(
-                posting_date__lte=now,
-                expiration_date__gt=now
-            )
+            queryset = queryset.filter(posting_date__lte=now, expiration_date__gt=now)
         elif status == "expired":
             queryset = queryset.filter(expiration_date__lte=now)
         elif status == "scheduled":
@@ -74,12 +74,20 @@ def list_jobs(
 
     return queryset
 
-@jobs.get("/{job_id}", response={200: JobPostingOut, 404: ErrorResponse}, summary="Get a Job")
+
+@jobs.get(
+    "/{job_id}", response={200: JobPostingOut, 404: ErrorResponse}, summary="Get a Job"
+)
 def get_job(request, job_id: UUID):
     job = get_object_or_404(JobPosting, id=job_id, is_active=True)
     return job
 
-@jobs.put("/{job_id}", response={200: JobPostingOut, 400: ErrorResponse, 404: ErrorResponse}, summary="Update a Job")
+
+@jobs.put(
+    "/{job_id}",
+    response={200: JobPostingOut, 400: ErrorResponse, 404: ErrorResponse},
+    summary="Update a Job",
+)
 def update_job(request, job_id: UUID, payload: JobPostingUpdate):
     try:
         job = get_object_or_404(JobPosting, id=job_id, is_active=True)
@@ -90,7 +98,10 @@ def update_job(request, job_id: UUID, payload: JobPostingUpdate):
     except Exception as e:
         return 400, {"message": str(e)}
 
-@jobs.delete("/{job_id}", response={204: None, 404: ErrorResponse}, summary="Delete a Job")
+
+@jobs.delete(
+    "/{job_id}", response={204: None, 404: ErrorResponse}, summary="Delete a Job"
+)
 def delete_job(request, job_id: UUID):
     job = get_object_or_404(JobPosting, id=job_id, is_active=True)
     job.is_active = False

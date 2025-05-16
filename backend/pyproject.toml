@@ -1,0 +1,33 @@
+[project]
+name = "my-backend-project"
+version = "0.1.0"
+description = "My backend using Django"
+requires-python = ">=3.9"
+
+[tool.ruff]  # https://docs.astral.sh/ruff/settings/#top-level
+src = ["backend", "api"]  # 指定需要檢查的原始碼資料夾
+line-length = 100
+target-version = "py39"
+exclude = ["venv", "__pycache__", "migrations"]
+select = [
+  "E", "F", "B", "I", "UP", "N", "C90", "SIM", "TID", "RET", "ARG"
+]
+
+[tool.ruff.isort]
+known-first-party = ["backend", "api"]
+combine-as-imports = true
+
+[tool.ruff.lint]  # https://docs.astral.sh/ruff/settings/#lint
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E402",  # module level import not at top of file
+]
+
+[tool.ruff.format]  # https://docs.astral.sh/ruff/settings/#format
+quote-style = "double"  # 引號風格，雙引號是預設值，這裡只是明示這個設定

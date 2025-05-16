@@ -1,8 +1,10 @@
-from typing import List, Optional, Literal
+from datetime import datetime
+from typing import Literal, Optional
+from uuid import UUID
+
 from ninja import Schema
 from pydantic import EmailStr
-from datetime import datetime
-from uuid import UUID
+
 
 class UserBase(Schema):
     email: EmailStr
@@ -10,14 +12,17 @@ class UserBase(Schema):
     role: Literal["applicant", "recruiter", "admin"]
     full_name: Optional[str] = None
 
+
 class UserCreate(UserBase):
     password: str
+
 
 class UserUpdate(Schema):
     email: Optional[EmailStr] = None
     username: Optional[str] = None
     full_name: Optional[str] = None
     password: Optional[str] = None
+
 
 class UserOut(UserBase):
     id: UUID

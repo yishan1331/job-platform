@@ -1,7 +1,9 @@
-from typing import Optional
-from ninja import Schema
 from datetime import datetime
+from typing import Optional
 from uuid import UUID
+
+from ninja import Schema
+
 
 class CompanyBase(Schema):
     name: str
@@ -10,14 +12,17 @@ class CompanyBase(Schema):
     website: Optional[str] = None
     logo_url: Optional[str] = None
 
+
 class CompanyCreate(CompanyBase):
     owner_id: UUID
+
 
 class CompanyUpdate(Schema):
     location: Optional[str] = None
     description: Optional[str] = None
     website: Optional[str] = None
     logo_url: Optional[str] = None
+
 
 class CompanyOut(CompanyBase):
     id: UUID

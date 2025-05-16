@@ -1,9 +1,9 @@
-import pytest
-from django.urls import reverse
 from uuid import UUID
 
+import pytest
+
 from api.models.user import User
-from api.schemas.users import UserCreate, UserUpdate
+
 
 @pytest.mark.django_db
 class TestUserAPI:
@@ -23,7 +23,9 @@ class TestUserAPI:
         assert data["full_name"] == test_user_data["full_name"]
         assert "password" not in data  # Ensure password is not returned
 
-    def test_create_user_duplicate_username(self, client, test_user, test_user_data, auth_headers):
+    def test_create_user_duplicate_username(
+        self, client, test_user, test_user_data, auth_headers
+    ):
         """Test creating user with duplicate username"""
         response = client.post("/users", json=test_user_data, headers=auth_headers)
         assert response.status_code == 409
@@ -34,7 +36,7 @@ class TestUserAPI:
         invalid_data = {
             "username": "test",  # Missing required fields
             "email": "invalid-email",  # Invalid email format
-            "role": "invalid-role"  # Invalid role format
+            "role": "invalid-role",  # Invalid role format
         }
         response = client.post("/users", json=invalid_data, headers=auth_headers)
         assert response.status_code == 422
@@ -56,7 +58,7 @@ class TestUserAPI:
                 email=f"user{i}@example.com",
                 password="testpass123",
                 role="applicant",
-                full_name=f"User {i}"
+                full_name=f"User {i}",
             )
 
         # Test first page
@@ -82,16 +84,18 @@ class TestUserAPI:
 
     def test_get_nonexistent_user(self, client, auth_headers):
         """Test getting non-existent user"""
-        response = client.get(f"/users/{UUID('00000000-0000-0000-0000-000000000000')}", headers=auth_headers)
+        response = client.get(
+            f"/users/{UUID('00000000-0000-0000-0000-000000000000')}",
+            headers=auth_headers,
+        )
         assert response.status_code == 404
 
     def test_update_user_success(self, client, test_user, auth_headers):
         """Test successful user update"""
-        update_data = {
-            "full_name": "Updated Name",
-            "email": "updated@example.com"
-        }
-        response = client.put(f"/users/{test_user.id}", json=update_data, headers=auth_headers)
+        update_data = {"full_name": "Updated Name", "email": "updated@example.com"}
+        response = client.put(
+            f"/users/{test_user.id}", json=update_data, headers=auth_headers
+        )
         assert response.status_code == 200
         data = response.json()
         assert data["full_name"] == update_data["full_name"]
@@ -99,10 +103,10 @@ class TestUserAPI:
 
     def test_update_user_password(self, client, test_user, auth_headers):
         """Test updating user password"""
-        update_data = {
-            "password": "newpassword123"
-        }
-        response = client.put(f"/users/{test_user.id}", json=update_data, headers=auth_headers)
+        update_data = {"password": "newpassword123"}
+        response = client.put(
+            f"/users/{test_user.id}", json=update_data, headers=auth_headers
+        )
         assert response.status_code == 200
 
         # Verify password has been updated
@@ -114,7 +118,7 @@ class TestUserAPI:
         response = client.put(
             f"/users/{UUID('00000000-0000-0000-0000-000000000000')}",
             json={"full_name": "New Name"},
-            headers=auth_headers
+            headers=auth_headers,
         )
         assert response.status_code == 404
 
@@ -129,5 +133,8 @@ class TestUserAPI:
 
     def test_delete_nonexistent_user(self, client, auth_headers):
         """Test deleting non-existent user"""
-        response = client.delete(f"/users/{UUID('00000000-0000-0000-0000-000000000000')}", headers=auth_headers)
+        response = client.delete(
+            f"/users/{UUID('00000000-0000-0000-0000-000000000000')}",
+            headers=auth_headers,
+        )
         assert response.status_code == 404
