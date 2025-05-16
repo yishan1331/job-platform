@@ -1,4 +1,5 @@
 import os
+from datetime import datetime, timedelta
 
 import pytest
 from ninja.testing import TestClient
@@ -44,10 +45,14 @@ def test_job_data():
     return {
         "title": "Test Job",
         "description": "A test job position",
-        "requirements": "Test requirements",
-        "salary_range": "50k-70k",
         "location": "Test Location",
-        "job_type": "full-time",
+        "salary_range": {"min": 50000, "max": 70000},
+        "salary_type": "annual",
+        "required_skills": ["Python", "Django"],
+        "posting_date": datetime.now(),
+        "expiration_date": datetime.now() + timedelta(days=30),
+        "apply_url": "https://example.com/apply",
+        "type": "full-time",
     }
 
 
@@ -63,10 +68,20 @@ def auth_headers(test_user):
 
 
 @pytest.fixture
-def test_company(test_company_data):
-    return Company.objects.create(**test_company_data)
+def test_company(test_company_data, test_user):
+    return Company.objects.create(
+        **test_company_data,
+        owner=test_user,
+        created_by=test_user,
+        modified_by=test_user,
+    )
 
 
 @pytest.fixture
 def test_job(test_job_data, test_company):
-    return JobPosting.objects.create(company=test_company, **test_job_data)
+    return JobPosting.objects.create(
+        **test_job_data,
+        company=test_company,
+        created_by=test_company.owner,
+        modified_by=test_company.owner,
+    )
