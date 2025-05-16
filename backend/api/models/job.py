@@ -29,7 +29,7 @@ class JobPosting(models.Model):
     required_skills = models.JSONField()
     posting_date = models.DateTimeField()
     expiration_date = models.DateTimeField(null=True, blank=True)
-    apply_url = models.URLField(max_length=512, blank=True)
+    apply_url = models.URLField(max_length=512, null=True, blank=True)
     type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES, blank=True)
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, related_name="job_postings"
@@ -44,6 +44,10 @@ class JobPosting(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def company_name(self) -> str:
+        return self.company.name
 
     class Meta:
         db_table = "job_postings"
