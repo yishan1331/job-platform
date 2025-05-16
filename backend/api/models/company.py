@@ -11,8 +11,8 @@ class Company(models.Model):
     name = models.CharField(max_length=100, unique=True)
     location = models.CharField(max_length=512)
     description = models.TextField(blank=True)
-    website = models.URLField(max_length=256, blank=True)
-    logo_url = models.URLField(max_length=512, blank=True)
+    website = models.URLField(max_length=256, null=True, blank=True)
+    logo_url = models.URLField(max_length=512, null=True, blank=True)
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="owned_companies"
     )
