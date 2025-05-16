@@ -33,7 +33,8 @@ class TestUserAPI:
         """Test creating user with invalid data"""
         invalid_data = {
             "username": "test",  # Missing required fields
-            "email": "invalid-email"  # Invalid email format
+            "email": "invalid-email",  # Invalid email format
+            "role": "invalid-role"  # Invalid role format
         }
         response = client.post("/users", json=invalid_data, headers=auth_headers)
         assert response.status_code == 422

@@ -50,13 +50,19 @@ def handle_generic_error(error: Exception) -> tuple[int, ErrorResponse]:
 
 def get_error_handler(error: Exception) -> tuple[int, ErrorResponse]:
     """Return the appropriate error handler based on error type"""
-    error_handlers = {
-        ValidationError: handle_validation_error,
-        IntegrityError: handle_integrity_error,
-        ObjectDoesNotExist: handle_not_found_error,
-        Http404: handle_not_found_error,
-        PermissionDenied: handle_permission_error,
-    }
 
-    handler = error_handlers.get(type(error), handle_generic_error)
-    return handler(error)
+    if isinstance(error, ValidationError):
+        print("ValidationError")
+        return handle_validation_error(error)
+    if isinstance(error, IntegrityError):
+        print("IntegrityError")
+        return handle_integrity_error(error)
+    if isinstance(error, (ObjectDoesNotExist, Http404)):
+        print("ObjectDoesNotExist or Http404")
+        return handle_not_found_error(error)
+    if isinstance(error, PermissionDenied):
+        print("PermissionDenied")
+        return handle_permission_error(error)
+
+    print("Generic Error")
+    return handle_generic_error(error)
