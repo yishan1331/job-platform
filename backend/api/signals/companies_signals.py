@@ -9,3 +9,6 @@ from api.models.job import JobPosting
 def update_jobposting_company_name(sender, instance, **kwargs):
     # 批次更新所有與此公司相關的 JobPosting
     JobPosting.objects.filter(company=instance).update(company_name_cached=instance.name)
+
+    if not instance.is_active:
+        JobPosting.objects.filter(company=instance).update(is_active=False)
