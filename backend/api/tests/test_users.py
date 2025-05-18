@@ -23,9 +23,7 @@ class TestUserAPI:
         assert data["full_name"] == test_user_data["full_name"]
         assert "password" not in data  # Ensure password is not returned
 
-    def test_create_user_duplicate_username(
-        self, client, test_user, test_user_data, auth_headers
-    ):
+    def test_create_user_duplicate_username(self, client, test_user, test_user_data, auth_headers):
         """Test creating user with duplicate username"""
         response = client.post("/users", json=test_user_data, headers=auth_headers)
         assert response.status_code == 409
@@ -93,9 +91,7 @@ class TestUserAPI:
     def test_update_user_success(self, client, test_user, auth_headers):
         """Test successful user update"""
         update_data = {"full_name": "Updated Name", "email": "updated@example.com"}
-        response = client.put(
-            f"/users/{test_user.id}", json=update_data, headers=auth_headers
-        )
+        response = client.put(f"/users/{test_user.id}", json=update_data, headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
         assert data["full_name"] == update_data["full_name"]
@@ -104,9 +100,7 @@ class TestUserAPI:
     def test_update_user_password(self, client, test_user, auth_headers):
         """Test updating user password"""
         update_data = {"password": "newpassword123"}
-        response = client.put(
-            f"/users/{test_user.id}", json=update_data, headers=auth_headers
-        )
+        response = client.put(f"/users/{test_user.id}", json=update_data, headers=auth_headers)
         assert response.status_code == 200
 
         # Verify password has been updated

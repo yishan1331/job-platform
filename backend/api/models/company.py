@@ -17,9 +17,7 @@ class Company(models.Model):
         User, on_delete=models.CASCADE, related_name="owned_companies"
     )
     is_active = models.BooleanField(default=True)
-    created_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="created_companies"
-    )
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_companies")
     modified_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="modified_companies"
     )

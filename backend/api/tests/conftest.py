@@ -1,7 +1,8 @@
 import os
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import pytest
+from django.utils import timezone
 from ninja.testing import TestClient
 from ninja_jwt.tokens import RefreshToken
 
@@ -25,34 +26,8 @@ def test_user_data():
         "username": "testuser",
         "email": "test@example.com",
         "password": "testpass123",
-        "role": "applicant",
+        "role": "recruiter",
         "full_name": "Test User",
-    }
-
-
-@pytest.fixture
-def test_company_data():
-    return {
-        "name": "Test Company",
-        "description": "A test company",
-        "website": "https://testcompany.com",
-        "location": "Test Location",
-    }
-
-
-@pytest.fixture
-def test_job_data():
-    return {
-        "title": "Test Job",
-        "description": "A test job position",
-        "location": "Test Location",
-        "salary_range": {"min": 50000, "max": 70000},
-        "salary_type": "annual",
-        "required_skills": ["Python", "Django"],
-        "posting_date": datetime.now(),
-        "expiration_date": datetime.now() + timedelta(days=30),
-        "apply_url": "https://example.com/apply",
-        "type": "full-time",
     }
 
 
@@ -68,6 +43,16 @@ def auth_headers(test_user):
 
 
 @pytest.fixture
+def test_company_data():
+    return {
+        "name": "Test Company",
+        "description": "A test company",
+        "website": "https://testcompany.com",
+        "location": "Test Location",
+    }
+
+
+@pytest.fixture
 def test_company(test_company_data, test_user):
     return Company.objects.create(
         **test_company_data,
@@ -78,10 +63,28 @@ def test_company(test_company_data, test_user):
 
 
 @pytest.fixture
+def test_job_data():
+    now = timezone.now()
+    return {
+        "title": "Test Job",
+        "description": "A test job position",
+        "location": "Test Location",
+        "min_salary": 50000,
+        "max_salary": 70000,
+        "salary_type": "annual",
+        "required_skills": ["Python", "Django"],
+        "posting_date": now,
+        "expiration_date": now + timedelta(days=30),
+        "type": "full-time",
+    }
+
+
+@pytest.fixture
 def test_job(test_job_data, test_company):
     return JobPosting.objects.create(
         **test_job_data,
         company=test_company,
+        company_name_cached=test_company.name,
         created_by=test_company.owner,
         modified_by=test_company.owner,
     )
