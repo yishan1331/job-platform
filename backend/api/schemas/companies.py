@@ -3,12 +3,13 @@ from typing import Optional
 from uuid import UUID
 
 from ninja import Schema
+from pydantic import Field
 
 
 class CompanyBase(Schema):
-    name: str
-    location: str
-    description: Optional[str] = None
+    name: str = Field(min_length=1, max_length=100)
+    location: str = Field(min_length=1, max_length=512)
+    description: Optional[str] = Field(min_length=1)
     website: Optional[str] = None
     logo_url: Optional[str] = None
 
@@ -22,6 +23,7 @@ class CompanyUpdate(Schema):
     description: Optional[str] = None
     website: Optional[str] = None
     logo_url: Optional[str] = None
+    is_active: Optional[bool] = None
 
 
 class CompanyOut(CompanyBase):
