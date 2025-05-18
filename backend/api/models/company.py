@@ -13,13 +13,9 @@ class Company(models.Model):
     description = models.TextField(blank=True)
     website = models.URLField(max_length=256, blank=True)
     logo_url = models.URLField(max_length=512, blank=True)
-    owner = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="owned_companies"
-    )
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owned_companies")
     is_active = models.BooleanField(default=True)
-    created_by = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="created_companies"
-    )
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_companies")
     modified_by = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="modified_companies"
     )

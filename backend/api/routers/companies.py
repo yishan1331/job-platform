@@ -12,9 +12,7 @@ from ..schemas.companies import CompanyCreate, CompanyOut, CompanyUpdate
 companies = Router(tags=["Companies"])
 
 
-@companies.post(
-    "", response={201: CompanyOut, 400: ErrorResponse}, summary="Create a Company"
-)
+@companies.post("", response={201: CompanyOut, 400: ErrorResponse}, summary="Create a Company")
 def create_company(request, payload: CompanyCreate):
     try:
         owner = get_object_or_404(User, id=payload.owner_id, is_active=True)
