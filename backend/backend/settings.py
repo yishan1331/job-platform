@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     "ninja",
     "ninja_extra",
     "ninja_jwt",
-    "api",
+    "api.apps.ApiConfig",
 ]
 
 MIDDLEWARE = [

@@ -69,7 +69,8 @@ def test_job_data():
         "title": "Test Job",
         "description": "A test job position",
         "location": "Test Location",
-        "salary_range": {"min": 50000, "max": 70000},
+        "min_salary": 50000,
+        "max_salary": 70000,
         "salary_type": "annual",
         "required_skills": ["Python", "Django"],
         "posting_date": now,
@@ -83,6 +84,7 @@ def test_job(test_job_data, test_company):
     return JobPosting.objects.create(
         **test_job_data,
         company=test_company,
+        company_name_cached=test_company.name,
         created_by=test_company.owner,
         modified_by=test_company.owner,
     )

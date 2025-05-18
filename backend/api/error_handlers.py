@@ -11,10 +11,9 @@ from .schemas.common import ErrorResponse
 
 def handle_validation_error(error: ValidationError) -> tuple[int, ErrorResponse]:
     """Handle validation errors"""
+    error_message = error.message if hasattr(error, "message") else str(error)
     return HTTPStatus.UNPROCESSABLE_ENTITY, ErrorResponse(
-        message=str(error),
-        code="VALIDATION_ERROR",
-        details=error.message_dict if hasattr(error, "message_dict") else str(error),
+        message=error_message, code="VALIDATION_ERROR", details={"error": error_message}
     )
 
 
@@ -22,26 +21,18 @@ def handle_integrity_error(error: IntegrityError) -> tuple[int, ErrorResponse]:
     """Handle database integrity errors"""
     error_message = str(error)
     if "unique constraint" in error_message.lower():
-        return HTTPStatus.CONFLICT, ErrorResponse(
-            message=str(error), code="DUPLICATE_ENTRY"
-        )
-    return HTTPStatus.BAD_REQUEST, ErrorResponse(
-        message=str(error), code="DATABASE_ERROR"
-    )
+        return HTTPStatus.CONFLICT, ErrorResponse(message=str(error), code="DUPLICATE_ENTRY")
+    return HTTPStatus.BAD_REQUEST, ErrorResponse(message=str(error), code="DATABASE_ERROR")
 
 
-def handle_not_found_error(
-    error: Union[ObjectDoesNotExist, Http404]
-) -> tuple[int, ErrorResponse]:
+def handle_not_found_error(error: Union[ObjectDoesNotExist, Http404]) -> tuple[int, ErrorResponse]:
     """Handle object not found errors"""
     return HTTPStatus.NOT_FOUND, ErrorResponse(message=str(error), code="NOT_FOUND")
 
 
 def handle_permission_error(error: PermissionDenied) -> tuple[int, ErrorResponse]:
     """Handle permission errors"""
-    return HTTPStatus.FORBIDDEN, ErrorResponse(
-        message=str(error), code="PERMISSION_DENIED"
-    )
+    return HTTPStatus.FORBIDDEN, ErrorResponse(message=str(error), code="PERMISSION_DENIED")
 
 
 def handle_generic_error(error: Exception) -> tuple[int, ErrorResponse]:
@@ -55,17 +46,12 @@ def get_error_handler(error: Exception) -> tuple[int, ErrorResponse]:
     """Return the appropriate error handler based on error type"""
 
     if isinstance(error, ValidationError):
-        print("ValidationError")
         return handle_validation_error(error)
     if isinstance(error, IntegrityError):
-        print("IntegrityError")
         return handle_integrity_error(error)
     if isinstance(error, (ObjectDoesNotExist, Http404)):
-        print("ObjectDoesNotExist or Http404")
         return handle_not_found_error(error)
     if isinstance(error, PermissionDenied):
-        print("PermissionDenied")
         return handle_permission_error(error)
 
-    print("Generic Error")
     return handle_generic_error(error)

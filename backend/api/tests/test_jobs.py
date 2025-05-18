@@ -1,9 +1,15 @@
-from datetime import datetime, timedelta
+import warnings
 from uuid import UUID
 
 import pytest
+from django.utils import timezone
 
 from api.models.job import JobPosting
+
+# 忽略特定的警告
+warnings.filterwarnings(
+    "ignore", message="DateTimeField .* received a naive datetime", category=RuntimeWarning
+)
 
 
 @pytest.mark.django_db
@@ -21,20 +27,101 @@ class TestJobAPI:
         assert data["title"] == test_job_data["title"]
         assert data["description"] == test_job_data["description"]
         assert data["location"] == test_job_data["location"]
-        assert data["salary_range"] == test_job_data["salary_range"]
+        assert data["min_salary"] == test_job_data["min_salary"]
+        assert data["max_salary"] == test_job_data["max_salary"]
         assert data["salary_type"] == test_job_data["salary_type"]
         assert data["required_skills"] == test_job_data["required_skills"]
 
-    def test_create_job_invalid_data(self, client, auth_headers):
+    def test_create_job_without_optional_fields(
+        self, client, test_company, test_job_data, auth_headers
+    ):
+        """Test creating job without optional fields"""
+        test_job_data = test_job_data.copy()
+        test_job_data["company_id"] = str(test_company.id)
+
+        # 移除所有非必填欄位
+        optional_fields = ["expiration_date", "apply_url"]
+        for field in optional_fields:
+            if field in test_job_data:
+                del test_job_data[field]
+
+        response = client.post("/jobs", json=test_job_data, headers=auth_headers)
+        assert response.status_code == 201
+        data = response.json()
+        assert data["title"] == test_job_data["title"]
+        assert data["expiration_date"] is None
+        assert data["apply_url"] is None
+
+    def test_create_job_with_null_optional_fields(
+        self, client, test_company, test_job_data, auth_headers
+    ):
+        """Test creating job with null optional fields"""
+        test_job_data = test_job_data.copy()
+        test_job_data["company_id"] = str(test_company.id)
+
+        # 設置非必填欄位為 null
+        test_job_data["expiration_date"] = None
+        test_job_data["apply_url"] = None
+
+        response = client.post("/jobs", json=test_job_data, headers=auth_headers)
+        assert response.status_code == 201
+        data = response.json()
+        assert data["expiration_date"] is None
+        assert data["apply_url"] is None
+
+    def test_create_job_invalid_data_title(self, client, test_job_data, auth_headers):
         """Test creating job with invalid data"""
-        invalid_data = {
-            "title": "Test Job",  # Missing required fields
-            "description": "Test Description",
-            "location": "Test Location",
-            "salary_range": {"min": 1000, "max": 2000},
-            "salary_type": "invalid-type",  # Invalid salary type
-        }
+        invalid_data = test_job_data.copy()
+        del invalid_data["title"]
         response = client.post("/jobs", json=invalid_data, headers=auth_headers)
+        assert response.status_code == 422
+
+    def test_create_job_invalid_data_description(self, client, test_job_data, auth_headers):
+        """Test creating job with invalid data"""
+        invalid_data = test_job_data.copy()
+        del invalid_data["description"]
+        response = client.post("/jobs", json=invalid_data, headers=auth_headers)
+        assert response.status_code == 422
+
+    def test_create_job_invalid_data_location(self, client, test_job_data, auth_headers):
+        """Test creating job with invalid data"""
+        invalid_data = test_job_data.copy()
+        del invalid_data["location"]
+        response = client.post("/jobs", json=invalid_data, headers=auth_headers)
+        assert response.status_code == 422
+
+    def test_create_job_invalid_data_salary_type(self, client, test_job_data, auth_headers):
+        """Test creating job with invalid data"""
+        invalid_data = test_job_data.copy()
+        invalid_data["salary_type"] = "invalid-type"
+        response = client.post("/jobs", json=invalid_data, headers=auth_headers)
+        assert response.status_code == 422
+
+    def test_create_job_invalid_data_required_skills(self, client, test_job_data, auth_headers):
+        """Test creating job with invalid data"""
+        invalid_data = test_job_data.copy()
+        invalid_data["required_skills"] = "invalid-skills"
+        response = client.post("/jobs", json=invalid_data, headers=auth_headers)
+        assert response.status_code == 422
+
+    def test_create_job_invalid_expiration_date(
+        self, client, test_company, test_job_data, auth_headers
+    ):
+        """Test creating job with invalid expiration date"""
+        test_job_data = test_job_data.copy()
+        test_job_data["company_id"] = str(test_company.id)
+        test_job_data["expiration_date"] = "invalid-date"
+
+        response = client.post("/jobs", json=test_job_data, headers=auth_headers)
+        assert response.status_code == 422
+
+    def test_create_job_invalid_job_type(self, client, test_company, test_job_data, auth_headers):
+        """Test creating job with invalid job type"""
+        test_job_data = test_job_data.copy()
+        test_job_data["company_id"] = str(test_company.id)
+        test_job_data["type"] = "invalid-type"
+
+        response = client.post("/jobs", json=test_job_data, headers=auth_headers)
         assert response.status_code == 422
 
     def test_get_job_list(self, client, test_job, auth_headers):
@@ -53,11 +140,13 @@ class TestJobAPI:
                 title=f"Job {i}",
                 description=f"Description {i}",
                 location="Test Location",
-                salary_range={"min": 1000, "max": 2000},
+                min_salary=1000,
+                max_salary=2000,
                 salary_type="annual",
+                type="full-time",
                 required_skills=["Python", "Django"],
-                posting_date=datetime.now(),
-                expiration_date=datetime.now() + timedelta(days=30),
+                posting_date=timezone.now(),
+                expiration_date=timezone.now() + timezone.timedelta(days=30),
                 company=test_company,
                 created_by=test_company.owner,
                 modified_by=test_company.owner,
@@ -86,7 +175,7 @@ class TestJobAPI:
         assert data["items"][0]["title"] == test_job.title
 
         # Test status filter
-        response = client.get("/jobs?status=active", headers=auth_headers)
+        response = client.get("/jobs?status=Active", headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
         assert len(data["items"]) > 0
@@ -121,9 +210,7 @@ class TestJobAPI:
             "description": "Updated Description",
             "location": "Updated Location",
         }
-        response = client.put(
-            f"/jobs/{test_job.id}", json=update_data, headers=auth_headers
-        )
+        response = client.put(f"/jobs/{test_job.id}", json=update_data, headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
         assert data["title"] == update_data["title"]
@@ -155,3 +242,21 @@ class TestJobAPI:
             headers=auth_headers,
         )
         assert response.status_code == 404
+
+
+# 在測試中使用帶時區的 datetime
+@pytest.fixture
+def job_data():
+    return {
+        "title": "Test Job",
+        "description": "Test Description",
+        "location": "Test Location",
+        "min_salary": 50000,
+        "max_salary": 70000,
+        "salary_type": "YEARLY",
+        "required_skills": ["Python", "Django"],
+        "posting_date": timezone.now(),
+        "expiration_date": timezone.now() + timezone.timedelta(days=30),
+        "type": "FULL_TIME",
+        "company_id": "00000000-0000-0000-0000-000000000000",
+    }
