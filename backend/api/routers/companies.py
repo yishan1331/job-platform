@@ -58,7 +58,7 @@ def get_company(request, company_id: UUID):
     summary="Update a Company",
 )
 def update_company(request, company_id: UUID, payload: CompanyUpdate):
-    company = get_object_or_404(Company, id=company_id, is_active=True)
+    company = get_object_or_404(Company, id=company_id)
     for key, value in payload.dict(exclude_unset=True).items():
         setattr(company, key, value)
     company.modified_by = request.user
@@ -72,7 +72,7 @@ def update_company(request, company_id: UUID, payload: CompanyUpdate):
     summary="Delete a Company",
 )
 def delete_company(request, company_id: UUID):
-    company = get_object_or_404(Company, id=company_id, is_active=True)
+    company = get_object_or_404(Company, id=company_id)
     company.is_active = False
     company.deleted_at = datetime.now()
     company.modified_by = request.user

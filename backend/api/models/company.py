@@ -29,3 +29,4 @@ class Company(models.Model):
         db_table = "companies"
         verbose_name = _("company")
         verbose_name_plural = _("companies")
+        ordering = ["-updated_at"]
