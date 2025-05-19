@@ -1,0 +1,202 @@
+{
+	"auth": {
+		"agree": "我同意",
+		"createAccount": "建立帳號",
+		"createNewAccount": "建立新帳號",
+		"email": "電子郵件",
+		"login": "登入",
+		"password": "密碼",
+		"recover_password": "恢復密碼",
+		"sign_up": "註冊",
+		"keep_logged_in": "保持登入",
+		"termsOfUse": "使用條款",
+		"reset_password": "重設密碼",
+		"login_timeout": "登入逾時，請重新登入"
+	},
+	"404": {
+		"title": "此頁面已去釣魚",
+		"text": "如果您覺得這不對，請給我們發送訊息",
+		"back_button": "返回儀表板"
+	},
+	"typography": {
+		"primary": "主要文字樣式",
+		"secondary": "次要文字樣式"
+	},
+	"language": {
+		"english": "英語",
+		"tradionnal_chinese": "繁體中文"
+	},
+	"sidebar": {
+		"jobs": "職缺",
+		"settings": "系統設定"
+	},
+	"user": {
+		"userNo": "編號",
+		"userID": "帳號",
+		"pwd": "密碼",
+		"confirmpwd": "確認密碼",
+		"userName": "名稱",
+		"email": "Email",
+		"levelNo": "權限等級",
+		"remark": "備註",
+		"creatorNo": "建立者編號",
+		"modifierNo": "修改者編號",
+		"createTime": "創建時間",
+		"updateTime": "修改時間"
+	},
+	"job": {
+		"title": "職缺名稱",
+		"company_name": "公司名稱",
+		"description": "職缺描述",
+		"location": "工作地點",
+		"min_salary": "最低薪資",
+		"max_salary": "最高薪資",
+		"salary_type": "薪資類型",
+		"required_skills": "所需技能",
+		"posting_date": "刊登日期",
+		"expiration_date": "到期日期",
+		"apply_url": "申請連結",
+		"type": "職缺類型",
+		"typeOptions": {
+			"full_time": "全職",
+			"part_time": "兼職",
+			"internship": "實習"
+		},
+		"salaryTypeOptions": {
+			"annual": "年",
+			"monthly": "月",
+			"hourly": "時"
+		},
+		"created_by": "建立者",
+		"modified_by": "修改者",
+		"is_active": "是否啟用",
+		"status": "狀態",
+		"statusOptions": {
+			"active": "啟用",
+			"expired": "已到期",
+			"scheduled": "已發佈"
+		},
+		"search": "搜尋",
+		"searchPlaceholder": "職缺名稱, 公司名稱, 工作地點, 等"
+	},
+	"table": {
+		"add": "新增",
+		"update": "修改",
+		"delete": "刪除",
+		"disable": "禁用",
+		"enable": "啟用",
+		"save": "儲存",
+		"cancel": "取消",
+		"exportCSV": "匯出CSV",
+		"exportXLSX": "匯出EXCEL",
+		"perPage": "每頁筆數",
+		"addUser": "新增帳戶",
+		"editUser": "編輯帳戶",
+		"addPermission": "新增權限",
+		"editPermission": "編輯權限",
+		"addProduct": "新增產品",
+		"editProduct": "編輯產品",
+		"beforeEditFormModalClose": "表單有未儲存的變更。您確定要關閉它嗎？",
+		"deleteConfirm": "確定要刪除",
+		"disableConfirm": "確定要禁用",
+		"enableConfirm": "確定要啟用",
+		"editBox": "編輯產品",
+		"deletebatchConfirm": "確定要批次刪除",
+		"ok": "確定",
+		"success": "成功"
+	},
+	"select": {
+		"categories": "請選擇最多兩個條件",
+		"category": "請選擇一個條件",
+		"search": "請輸入搜尋條件",
+		"fuzzy": "模糊",
+		"normal": "一般"
+	},
+	"validation": {
+		"required": "此欄位必填",
+		"passwordLength": "密碼字段需要超過6個字元且不能超過16個字元",
+		"passwordFormat": "密碼字段格式無效，只接受英文、數字及特定符號({allowedSymbols})",
+		"confirmpassword": "密碼與確認密碼必須一致",
+		"email": "請輸入有效的電子郵件地址",
+		"ipRestrictionFormat": "IP格式無效，只接受{ipSeparate}用來分隔多組IP",
+		"numbersandcharacters": "4-8個英文或數字，不可包含空格或非英文字母的字元",
+		"sensorArea": "請設定啟用的備用欄位名稱",
+		"illegalnoteFieldNames": "備用欄位名稱不能與以下列表相同({illegalnoteFieldNames})",
+		"noteFieldNameDuplicates": "備用欄位名稱有重複",
+		"boxSn": "只接受1-14個數字，不可包含空格或其他非數字的字元",
+		"boxMac": "只接受1-17個字元（數字、英文、冒號:)，不可包含空格",
+		"boxProductionDate": "生產時間不能大於現在日期"
+	},
+	"settings": {
+		"theme": "主題",
+		"buttonSelect": {
+			"dark": "Dark",
+			"light": "Light"
+		},
+		"preferences": "一般偏好",
+		"language": "語言"
+	},
+	"messages": {
+		"all": "查看所有消息",
+		"new": "来自 {name} 的新消息",
+		"mark_as_read": "標記為已讀"
+	},
+	"navbar": {
+		"logout": "登出系統"
+	},
+	"notifications": {
+		"all": "查看所有通知",
+		"mark_as_read": "標為已讀",
+		"sentMessage": "{name} 給你發了一封訊息",
+		"uploadedZip": "{name} 上傳了一個新的 Zip 文件 {type}",
+		"startedTopic": "{name} 開始了一個新話題"
+	},
+	"treeView": {
+		"basic": "基本型",
+		"icons": "圖示",
+		"selectable": "可選擇",
+		"editable": "可編輯",
+		"advanced": "高級"
+	},
+	"chat": {
+		"title": "聊天"
+	},
+	"cards": {
+		"cards": "卡片",
+		"fixed": "固定的",
+		"floating": "浮動的",
+		"contentText": "獨特的斑馬條紋使它們成為人們最熟悉的動物之一。",
+		"rowHeight": "行高",
+		"title": {
+			"dark": "暗色背景",
+			"bright": "亮色卡片",
+			"titleOnImageNoOverlay": "圖像上的標題，但沒有疊加",
+			"normal": "標準卡",
+			"overlayAndTextOnImage": "圖像上有覆蓋和文字的卡片",
+			"stripeNoImage": "無影像條紋卡"
+		},
+		"button": {
+			"main": "主要",
+			"cancel": "取消"
+		},
+		"link": {
+			"edit": "編輯",
+			"setAsDefault": "設為預設",
+			"delete": "刪除",
+			"traveling": "Traveling",
+			"france": "法國",
+			"review": "評論",
+			"feedback": "回饋訊息",
+			"readFull": "閱讀全文",
+			"secondaryAction": "第二行為",
+			"action1": "行為 1",
+			"action2": "行為 2"
+		}
+	},
+	"helpAndSupport": "幫助與支持",
+	"aboutVuesticAdmin": "關於 Vuestic Admin",
+	"search": {
+		"placeholder": "搜尋...",
+		"searchModule": "搜尋資料模組"
+	}
+}
