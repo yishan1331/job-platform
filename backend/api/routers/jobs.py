@@ -33,7 +33,7 @@ def get_search_config():
 def create_job(request, payload: JobPostingCreate):
     company = get_object_or_404(Company, id=payload.company_id, is_active=True)
 
-    if not company.owner == request.user:
+    if not company.owner == request.user and not request.user.is_superuser:
         return 403, {"message": "You don't have permission to post jobs for this company"}
 
     if JobPosting.objects.exists_duplicate_title(company, payload.title):

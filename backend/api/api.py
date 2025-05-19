@@ -5,6 +5,7 @@ from ninja_jwt.authentication import JWTAuth
 from ninja_jwt.controller import NinjaJWTDefaultController
 
 from .error_handlers import get_error_handler
+from .routers.auth import auth
 from .routers.companies import companies
 from .routers.jobs import jobs
 from .routers.users import users
@@ -22,10 +23,10 @@ api = NinjaExtraAPI(
 api.register_controllers(NinjaJWTDefaultController)
 
 # 註冊其他路由
+api.add_router("/auth", auth, tags=["Auth"])
 api.add_router("/users", users, tags=["Users"])
 api.add_router("/companies", companies, tags=["Companies"])
 api.add_router("/jobs", jobs, tags=["Jobs"])
-
 
 @api.exception_handler(NinjaHttpError)
 def handle_ninja_http_error(request, exc: NinjaHttpError):
