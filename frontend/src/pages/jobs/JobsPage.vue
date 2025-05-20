@@ -82,7 +82,7 @@ import {
 	getSkillOptions,
 	getSalaryTypeOptions,
 	getStatusOptions,
-} from "@/config/jobOptions";
+} from "@/services/utils/jobOptions";
 const AuthStore = useUserAuthStore();
 const { userAuthData } = storeToRefs(AuthStore);
 
@@ -227,7 +227,7 @@ const onDataSaved = async (job: JobPosting) => {
 		message: `${dataToEdit.value ? t("table.update") : t("table.add")} ${t(
 			"table.success"
 		)}`,
-		color: "primary",
+		color: "success",
 	});
 };
 
@@ -243,7 +243,7 @@ const onDataDelete = async (job: JobPosting) => {
 	}
 	notify({
 		message: `${t("table.delete")} ${t("table.success")}`,
-		color: "primary",
+		color: "success",
 	});
 };
 

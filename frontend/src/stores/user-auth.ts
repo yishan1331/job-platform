@@ -1,6 +1,26 @@
 import { defineStore } from "pinia";
 import { cloneDeep } from "lodash";
 
+interface LoginDetails {
+	login_email: string;
+	login_username: string;
+	login_status: boolean;
+	login_token: string;
+	login_role: string;
+	login_id: string;
+}
+
+interface UserAuthData {
+	email: string;
+	username: string;
+	status: boolean;
+	token: string;
+	role: string;
+	id: string;
+}
+
+type RouteRemover = () => void;
+
 export const useUserAuthStore = defineStore("user", {
 	state: () => {
 		return {
@@ -11,7 +31,7 @@ export const useUserAuthStore = defineStore("user", {
 				login_token: "",
 				login_role: "",
 				login_id: "",
-			},
+			} as LoginDetails,
 
 			DEFAULT_login_details: {
 				login_email: "",
@@ -20,15 +40,15 @@ export const useUserAuthStore = defineStore("user", {
 				login_token: "",
 				login_role: "",
 				login_id: "",
-			},
-			added_route_to_remove: [] as any[],
+			} as LoginDetails,
+			added_route_to_remove: [] as RouteRemover[],
 
 			language: "gb",
 		};
 	},
 
 	getters: {
-		userAuthData: (state) => {
+		userAuthData: (state): UserAuthData => {
 			return {
 				email: state.login_details.login_email,
 				username: state.login_details.login_username,
@@ -43,13 +63,7 @@ export const useUserAuthStore = defineStore("user", {
 	},
 
 	actions: {
-		setUserAuthData(obj: {
-			email: string;
-			status: boolean;
-			role: string;
-			username: string;
-			id: string;
-		}) {
+		setUserAuthData(obj: Omit<UserAuthData, "token">) {
 			this.login_details.login_email = obj.email;
 			this.login_details.login_status = obj.status;
 			this.login_details.login_role = obj.role;
@@ -65,7 +79,7 @@ export const useUserAuthStore = defineStore("user", {
 			this.login_details = cloneDeep(this.DEFAULT_login_details);
 		},
 
-		setAddedRouteToRemove(func: any) {
+		setAddedRouteToRemove(func: RouteRemover) {
 			this.added_route_to_remove.push(func);
 		},
 

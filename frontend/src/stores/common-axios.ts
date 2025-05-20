@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
 import { storeToRefs } from "pinia";
 
 import { useUserAuthStore } from "@/stores/user-auth";
@@ -7,9 +7,18 @@ import { useUserAuthStore } from "@/stores/user-auth";
 const AuthStore = useUserAuthStore();
 const { userAuthData } = storeToRefs(AuthStore);
 
-export type AxiosResult = {
-	data: any;
+export type AxiosResult<T = unknown> = {
+	data: T;
 	status: number;
+};
+
+export type HttpMethod = "get" | "post" | "put" | "delete";
+
+export type AxiosActionParams = {
+	url: string;
+	params?: Record<string, unknown>;
+	data?: Record<string, unknown>;
+	method: HttpMethod;
 };
 
 const BASE_URL = "http://127.0.0.1:8000/api/v1";
@@ -33,30 +42,40 @@ export const useCommonAxiosStore = defineStore("commonAxios", {
 	},
 
 	actions: {
-		async axiosAction(data: {
-			url: string;
-			params: object;
-			method: string;
-		}) {
+		async axiosAction<T = unknown>(data: AxiosActionParams) {
 			const api = axios.create({
 				headers: {
 					Authorization: `Bearer ${userAuthData.value.token}`,
 				},
 			});
-			const method = data.method as "get" | "post" | "put" | "delete";
-			await api[method](`${BASE_URL}/${data.url}`, data.params)
-				.then((res) => {
-					this.axios_result = {
-						data: res.data,
-						status: res.status,
-					};
-				})
-				.catch((err) => {
-					this.axios_result = {
-						data: err.response.data,
-						status: err.response.status,
-					};
-				});
+
+			try {
+				let response: AxiosResponse<T>;
+
+				if (data.method === "get" || data.method === "delete") {
+					response = await api[data.method]<T>(
+						`${BASE_URL}/${data.url}`,
+						{ params: data.params }
+					);
+				} else {
+					// POST 和 PUT 請求使用 data 作為請求體
+					response = await api[data.method]<T>(
+						`${BASE_URL}/${data.url}`,
+						data.data || data.params
+					);
+				}
+
+				this.axios_result = {
+					data: response.data,
+					status: response.status,
+				};
+			} catch (error) {
+				const axiosError = error as AxiosError<T>;
+				this.axios_result = {
+					data: axiosError.response?.data as T,
+					status: axiosError.response?.status ?? 500,
+				};
+			}
 		},
 	},
 });

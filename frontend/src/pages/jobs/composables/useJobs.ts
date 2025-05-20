@@ -83,7 +83,7 @@ export const useJobs = (options?: {
 
 		statusCode.value = result.statusCode;
 		response.value = result.response.message;
-		if (statusCode.value === 201) await fetch();
+		if (statusCode.value === 201 || statusCode.value === 200) await fetch();
 		isLoading.value = false;
 	};
 
@@ -93,7 +93,7 @@ export const useJobs = (options?: {
 
 		statusCode.value = result.statusCode;
 		response.value = result.response.message;
-		if (statusCode.value === 201) await fetch();
+		if (statusCode.value === 201 || statusCode.value === 200) await fetch();
 		isLoading.value = false;
 	};
 
@@ -103,7 +103,7 @@ export const useJobs = (options?: {
 
 		statusCode.value = result.statusCode;
 		response.value = result.response.message;
-		if (statusCode.value === 201) await fetch();
+		if (statusCode.value === 201 || statusCode.value === 204) await fetch();
 		isLoading.value = false;
 	};
 

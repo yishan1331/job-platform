@@ -20,6 +20,7 @@
 					:rules="[validators.required]"
 					class="w-full sm:w-1/2"
 					track-by="value"
+					:disabled="!!props.job"
 				/>
 			</div>
 
@@ -137,7 +138,7 @@ import {
 	getJobTypeOptions,
 	getSkillOptions,
 	getSalaryTypeOptions,
-} from "@/config/jobOptions";
+} from "@/services/utils/jobOptions";
 
 const { t } = useI18n();
 

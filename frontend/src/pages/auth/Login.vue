@@ -103,14 +103,14 @@ const submit = async () => {
 		if (statusCode.value != 200) {
 			notify({
 				message: t("auth.login_failed"),
-				color: "primary",
+				color: "danger",
 				duration: 2000,
 			});
 			return;
 		}
 		notify({
 			message: t("auth.login_success"),
-			color: "primary",
+			color: "success",
 			duration: 2000,
 		});
 

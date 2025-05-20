@@ -29,37 +29,6 @@ export const errorAuthHandling = () => {
 	return;
 };
 
-export const errorCUDHandling = (dataCUDStatus: CUDBoxMsg) => {
-	if (dataCUDStatus["errorNum"] > 0) {
-		dataCUDStatus["errorMsg"] = dataCUDStatus["errorMsg"].map((error) => {
-			if (macRegex.test(error)) {
-				const macMatch = error.match(macRegex);
-				const macValue = macMatch?.[1]; // 提取重複的 MAC 值
-				return `<li>MAC資料：'${macValue}'已重複，無法建立</li>`;
-			}
-			if (snRegex.test(error)) {
-				const snMatch = error.match(snRegex);
-				const snValue = snMatch?.[1]; // 提取重複的序號值
-				return `<li>序號資料：'${snValue}'已重複，無法建立</li>`;
-			}
-			return `<li>${error}</li>`;
-		});
-	}
-	notify({
-		message: `成功數量：${dataCUDStatus["successNum"]}${
-			dataCUDStatus["successNum"] > 0
-				? `<br>成功訊息：${dataCUDStatus["successMsg"].join("<br>")}`
-				: ""
-		}<br>失敗數量：${dataCUDStatus["errorNum"]}${
-			dataCUDStatus["errorNum"] > 0
-				? `<br>失敗訊息：<ul>${dataCUDStatus["errorMsg"].join("")}</ul>`
-				: ""
-		}`,
-		color: "danger",
-		dangerouslyUseHtmlString: true,
-	});
-};
-
 export const getSortItem = (obj: any, sortBy: string) => {
 	return obj[sortBy];
 };
@@ -118,47 +87,8 @@ export const filterSortingFn = (
 
 export const errorHandling = (response: string, table?: string) => {
 	if (response != "ok") {
-		let notify_response = response;
-		let caseKey = "";
-		if (
-			response.includes(
-				"Cannot delete or update a parent row: a foreign key constraint fails"
-			)
-		) {
-			caseKey = "ForeignKeyConstraintError";
-		} else if (response.includes("Duplicate entry")) {
-			caseKey = "DuplicateKeyConstraintError";
-		}
-		switch (caseKey) {
-			case "ForeignKeyConstraintError":
-				if (
-					table == "accessPermission" &&
-					response.includes("user_ibfk_1")
-				)
-					notify_response = "此權限名稱已有帳戶建立，無法做刪除";
-				break;
-			case "DuplicateKeyConstraintError":
-				if (table == "box" && macRegex.test(response)) {
-					const macMatch = response.match(macRegex);
-					const macValue = macMatch?.[1];
-					notify_response = `MAC資料：'${macValue}'已重複，無法建立`;
-				}
-				if (table == "box" && snRegex.test(response)) {
-					const snMatch = response.match(snRegex);
-					const snValue = snMatch?.[1];
-					notify_response = `序號資料：'${snValue}'已重複，無法建立`;
-				}
-				if (
-					table == "accessPermission" &&
-					response.includes("for key 'levelName'")
-				)
-					notify_response = "權限名稱已重複，無法建立";
-				break;
-			default:
-				break;
-		}
 		notify({
-			message: notify_response,
+			message: response,
 			color: "danger",
 			dangerouslyUseHtmlString: true,
 		});
@@ -200,15 +130,6 @@ export const validators = {
 		v === cv || t("validation.confirmpassword"),
 };
 
-const isProductionTimeValid = (productionTime: Date) => {
-	const today = new Date();
-	// 将今天的时间设为当天的最后一刻（23:59:59）
-	today.setHours(23, 59, 59, 999);
-
-	const productionDate = new Date(productionTime);
-	return productionDate <= today;
-};
-
 export type Pagination = {
 	page: number;
 	perPage: number;
@@ -242,18 +163,4 @@ export type APIsResponse = {
 		items?: any[] | object;
 		count?: number;
 	};
-};
-
-export const organizeXLSXData = (tableData: any[]) => {
-	let xlsxData = cloneDeep(tableData);
-	// xlsxData = xlsxData.map((data) => {
-	// 	data.creatorNo = users.value[data.creatorNo]
-	// 		? users.value[data.creatorNo]
-	// 		: data.creatorNo
-	// 	data.modifierNo = users.value[data.modifierNo]
-	// 		? users.value[data.modifierNo]
-	// 		: data.modifierNo
-	// 	return data
-	// })
-	return xlsxData;
 };

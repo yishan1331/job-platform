@@ -3,27 +3,15 @@ import { Ref, ref, unref } from "vue";
 import { type Filters } from "@/services/utils";
 import { login, logout, authMe } from "@/APIs/auth";
 
-const makeFiltersRef = () =>
-	ref<Partial<Filters>>({ isActive: true, search: "" });
-
-export const useAuth = (
-	formData?: { email: string; password: string },
-	options?: {
-		filters?: Ref<Partial<Filters>>;
-	}
-) => {
+export const useAuth = (formData?: { email: string; password: string }) => {
 	const isLoading = ref(false);
 	let users = ref({});
 	const statusCode = ref<number>(0);
 	let sessions = ref({});
 
-	const { filters = makeFiltersRef() } = options || {};
-
 	const logIn = async () => {
 		isLoading.value = true;
-		const loginResult = await login(formData, {
-			...unref(filters),
-		});
+		const loginResult = await login(formData);
 
 		if (loginResult) {
 			const { statusCode: newStatusCode, response } = loginResult;
@@ -54,14 +42,6 @@ export const useAuth = (
 	};
 
 	return {
-		// isLoading,
-
-		// filters,
-
-		// statusCode,
-		// response,
-		// users,
-
 		logIn,
 		logOut,
 		getAuthMe,

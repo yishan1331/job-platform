@@ -76,7 +76,7 @@ const emit = defineEmits<{
 const sortByVModel = useVModel(props, "sortBy", emit);
 const sortingOrderVModel = useVModel(props, "sortingOrder", emit);
 
-const columns = [
+const columns = computed(() => [
 	{
 		key: "title",
 		label: t("job.title"),
@@ -156,7 +156,7 @@ const columns = [
 		key: "actions",
 		label: t("table.actions"),
 	},
-];
+]);
 
 const { confirm } = useModal();
 
