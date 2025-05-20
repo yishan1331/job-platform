@@ -28,6 +28,7 @@ api.add_router("/users", users, tags=["Users"])
 api.add_router("/companies", companies, tags=["Companies"])
 api.add_router("/jobs", jobs, tags=["Jobs"])
 
+
 @api.exception_handler(NinjaHttpError)
 def handle_ninja_http_error(request, exc: NinjaHttpError):
     error_message = str(exc)

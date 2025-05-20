@@ -3,6 +3,7 @@ from ninja import Router
 
 auth = Router(tags=["Auth"])
 
+
 @auth.get("/me")
 def get_current_user(request):
     user = request.user

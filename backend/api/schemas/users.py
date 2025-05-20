@@ -28,7 +28,7 @@ class UserOut(UserBase):
     id: UUID
     is_active: bool
     username: str
-    role: Optional[Literal["applicant", "recruiter", "admin"]] = None
+    role: Optional[Literal["applicant", "recruiter", "admin", ""]] = None
     last_login: Optional[datetime] = None
 
     class Config:

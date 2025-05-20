@@ -83,7 +83,12 @@ def create_job(request, payload: JobPostingCreate):
 )
 @paginate(PageNumberPagination)
 def list_jobs(request, filters: Query[JobQueryParams]):
-    queryset = JobPosting.objects.select_related("company").filter(is_active=True)
+    if request.user.role == "recruiter":
+        queryset = JobPosting.objects.select_related("company").filter(
+            is_active=True, company__owner_id=request.user.id
+        )
+    else:
+        queryset = JobPosting.objects.select_related("company").filter(is_active=True)
 
     # 全文搜尋
     if filters.search:
