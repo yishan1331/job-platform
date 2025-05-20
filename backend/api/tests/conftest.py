@@ -32,8 +32,24 @@ def test_user_data():
 
 
 @pytest.fixture
+def test_user_data2():
+    return {
+        "username": "testuser2",
+        "email": "test2@example.com",
+        "password": "testpass123",
+        "role": "applicant",
+        "full_name": "Test User2",
+    }
+
+
+@pytest.fixture
 def test_user(test_user_data):
     return User.objects.create_user(**test_user_data)
+
+
+@pytest.fixture
+def test_user2(test_user_data2):
+    return User.objects.create_user(**test_user_data2)
 
 
 @pytest.fixture

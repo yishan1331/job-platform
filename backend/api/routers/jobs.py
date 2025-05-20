@@ -118,27 +118,27 @@ def list_jobs(request, filters: Query[JobQueryParams]):
     if filters.status == "Active":
         queryset = queryset.filter(is_active=True, expiration_date__gt=now)
     elif filters.status == "Expired":
-        queryset = queryset.filter(expiration_date__lte=now)
+        queryset = queryset.filter(is_active=True, expiration_date__lte=now)
     elif filters.status == "Scheduled":
-        queryset = queryset.filter(posting_date__gt=now)
+        queryset = queryset.filter(is_active=True, posting_date__gt=now)
 
     if filters.location:
-        queryset = queryset.filter(location__icontains=filters.location)
+        queryset = queryset.filter(is_active=True, location__icontains=filters.location)
 
     if filters.salary_type:
-        queryset = queryset.filter(salary_type=filters.salary_type)
+        queryset = queryset.filter(is_active=True, salary_type=filters.salary_type)
 
     if filters.min_salary:
-        queryset = queryset.filter(min_salary__gte=filters.min_salary)
+        queryset = queryset.filter(is_active=True, min_salary__gte=filters.min_salary)
 
     if filters.max_salary:
-        queryset = queryset.filter(max_salary__lte=filters.max_salary)
+        queryset = queryset.filter(is_active=True, max_salary__lte=filters.max_salary)
 
     if filters.company_id:
-        queryset = queryset.filter(company_id=filters.company_id)
+        queryset = queryset.filter(is_active=True, company_id=filters.company_id)
 
     if filters.type:
-        queryset = queryset.filter(type=filters.type)
+        queryset = queryset.filter(is_active=True, type=filters.type)
 
     # 排序，支援前綴 + 或 -
     if filters.order_by:

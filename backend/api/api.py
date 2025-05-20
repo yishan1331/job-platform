@@ -32,7 +32,7 @@ api.add_router("/jobs", jobs, tags=["Jobs"])
 @api.exception_handler(NinjaHttpError)
 def handle_ninja_http_error(request, exc: NinjaHttpError):
     error_message = str(exc)
-    if "Expecting value" in error_message or "JSONDecodeError" in str(type(exc)):
+    if "Cannot parse request body" in error_message or "JSONDecodeError" in str(type(exc)):
         return JsonResponse(
             {
                 "message": "Invalid JSON format",
@@ -43,6 +43,17 @@ def handle_ninja_http_error(request, exc: NinjaHttpError):
                 },
             },
             status=400,
+        )
+
+    # 處理未認證的請求
+    if "Unauthorized" in error_message:
+        return JsonResponse(
+            {
+                "message": "Unauthorized",
+                "code": "UNAUTHORIZED",
+                "details": None,
+            },
+            status=401,
         )
 
     return JsonResponse({"message": str(exc), "code": "BAD_REQUEST", "details": None}, status=400)

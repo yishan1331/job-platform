@@ -59,7 +59,7 @@ class JobPosting(models.Model):
 
     @property
     def is_expired(self):
-        return self.expiration_date and timezone.now() > self.expiration_date
+        return False if self.expiration_date is None else timezone.now() > self.expiration_date
 
     class Meta:
         db_table = "job_postings"

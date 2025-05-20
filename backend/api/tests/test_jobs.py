@@ -1,4 +1,5 @@
 import warnings
+from datetime import timedelta
 from uuid import UUID
 
 import pytest
@@ -31,6 +32,250 @@ class TestJobAPI:
         assert data["max_salary"] == test_job_data["max_salary"]
         assert data["salary_type"] == test_job_data["salary_type"]
         assert data["required_skills"] == test_job_data["required_skills"]
+        assert data["type"] == test_job_data["type"]
+        assert data["company_id"] == str(test_company.id)
+        assert data["is_active"] is True
+
+    def test_create_job_permission_denied(
+        self, client, test_company, test_job_data, test_user2, auth_headers
+    ):
+        """測試創建職缺時權限不足的情況"""
+        # 創建一個新的公司，但不將當前用戶設為擁有者
+        test_job_data = test_job_data.copy()
+        test_job_data["company_id"] = str(test_company.id)
+
+        # 確保當前用戶不是公司擁有者
+        test_company.owner = test_user2
+        test_company.save()
+
+        response = client.post("/jobs", json=test_job_data, headers=auth_headers)
+        assert response.status_code == 403
+        assert "permission" in response.json()["message"].lower()
+
+    def test_create_job_duplicate_title(self, client, test_company, test_job_data, auth_headers):
+        """測試創建重複標題的職缺"""
+        # 先創建一個職缺
+        test_job_data = test_job_data.copy()
+        test_job_data["company_id"] = str(test_company.id)
+        response = client.post("/jobs", json=test_job_data, headers=auth_headers)
+        assert response.status_code == 201
+
+        # 嘗試創建相同標題的職缺
+        response = client.post("/jobs", json=test_job_data, headers=auth_headers)
+        assert response.status_code == 409
+        assert "already exists" in response.json()["message"].lower()
+
+    def test_job_search(self, client, test_company, auth_headers):
+        """測試職缺搜尋功能"""
+        # 創建多個職缺用於搜尋測試
+        jobs = [
+            {
+                "title": "Python Developer",
+                "description": "Looking for a Python expert",
+                "location": "Taipei",
+                "min_salary": 50000,
+                "max_salary": 70000,
+                "salary_type": "annual",
+                "required_skills": ["Python", "Django"],
+                "type": "full-time",
+                "company_id": str(test_company.id),
+                "posting_date": timezone.now(),
+                "expiration_date": timezone.now() + timezone.timedelta(days=30),
+            },
+            {
+                "title": "Java Developer",
+                "description": "Looking for a Java expert",
+                "location": "Taipei",
+                "min_salary": 50000,
+                "max_salary": 70000,
+                "salary_type": "annual",
+                "required_skills": ["Java", "Spring"],
+                "type": "full-time",
+                "company_id": str(test_company.id),
+                "posting_date": timezone.now(),
+                "expiration_date": timezone.now() + timezone.timedelta(days=30),
+            },
+        ]
+
+        for job_data in jobs:
+            response = client.post("/jobs", json=job_data, headers=auth_headers)
+            assert response.status_code == 201
+
+        # 測試精確搜尋
+        response = client.get("/jobs?search=Python", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) == 1
+        assert data["items"][0]["title"] == "Python Developer"
+
+        # 測試模糊搜尋
+        response = client.get("/jobs?search=Pythn", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) == 0
+
+    def test_job_status_filters(self, client, test_company, auth_headers):
+        """測試職缺狀態過濾"""
+        now = timezone.now()
+
+        # 創建已過期的職缺
+        expired_job = {
+            "title": "Expired Job",
+            "description": "This job has expired",
+            "location": "Taipei",
+            "min_salary": 50000,
+            "max_salary": 70000,
+            "salary_type": "annual",
+            "required_skills": ["Python"],
+            "type": "full-time",
+            "company_id": str(test_company.id),
+            "posting_date": now - timedelta(days=10),
+            "expiration_date": now - timedelta(days=10),
+            "is_active": True,
+        }
+
+        # 創建預定發布的職缺
+        scheduled_job = {
+            "title": "Scheduled Job",
+            "description": "This job is scheduled",
+            "location": "Taipei",
+            "min_salary": 50000,
+            "max_salary": 70000,
+            "salary_type": "annual",
+            "required_skills": ["Python"],
+            "type": "full-time",
+            "company_id": str(test_company.id),
+            "posting_date": now + timedelta(days=10),
+            "is_active": True,
+        }
+
+        # 創建職缺
+        response = client.post("/jobs", json=expired_job, headers=auth_headers)
+        response = client.post("/jobs", json=scheduled_job, headers=auth_headers)
+
+        # 測試過期職缺過濾
+        response = client.get("/jobs", headers=auth_headers)
+        data = response.json()
+        response = client.get("/jobs?status=Expired", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) == 1
+        assert data["items"][0]["title"] == "Expired Job"
+
+        # 測試預定發布職缺過濾
+        response = client.get("/jobs?status=Scheduled", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) == 1
+        assert data["items"][0]["title"] == "Scheduled Job"
+
+    def test_job_ordering(self, client, test_company, auth_headers):
+        """測試職缺排序功能"""
+        # 創建多個職缺
+        jobs = [
+            {
+                "title": "Job 1",
+                "description": "First job",
+                "location": "Taipei",
+                "min_salary": 50000,
+                "max_salary": 70000,
+                "salary_type": "annual",
+                "required_skills": ["Python"],
+                "type": "full-time",
+                "company_id": str(test_company.id),
+                "posting_date": timezone.now() - timedelta(days=2),
+            },
+            {
+                "title": "Job 2",
+                "description": "Second job",
+                "location": "Taipei",
+                "min_salary": 50000,
+                "max_salary": 70000,
+                "salary_type": "annual",
+                "required_skills": ["Python"],
+                "type": "full-time",
+                "company_id": str(test_company.id),
+                "posting_date": timezone.now() - timedelta(days=1),
+            },
+        ]
+
+        for job_data in jobs:
+            response = client.post("/jobs", json=job_data, headers=auth_headers)
+            assert response.status_code == 201
+
+        # 測試按發布日期升序排序
+        response = client.get("/jobs?order_by=posting_date", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) >= 2
+        assert data["items"][0]["title"] == "Job 1"
+
+        # 測試按發布日期降序排序
+        response = client.get("/jobs?order_by=-posting_date", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) >= 2
+        assert data["items"][0]["title"] == "Job 2"
+
+        # 測試無效的排序欄位
+        response = client.get("/jobs?order_by=invalid_field", headers=auth_headers)
+        assert response.status_code == 422
+
+    def test_job_filters(self, client, test_company, auth_headers):
+        """測試職缺過濾功能"""
+        # 創建測試職缺
+        job_data = {
+            "title": "Filter Test Job",
+            "description": "Test job for filters",
+            "location": "Taipei",
+            "min_salary": 50000,
+            "max_salary": 70000,
+            "salary_type": "annual",
+            "required_skills": ["Python"],
+            "type": "full-time",
+            "company_id": str(test_company.id),
+            "posting_date": timezone.now(),
+            "expiration_date": timezone.now() + timezone.timedelta(days=30),
+        }
+
+        response = client.post("/jobs", json=job_data, headers=auth_headers)
+        assert response.status_code == 201
+
+        # 測試位置過濾
+        response = client.get("/jobs?location=Taipei", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) > 0
+
+        # 測試薪資類型過濾
+        response = client.get("/jobs?salary_type=annual", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) > 0
+
+        # 測試最低薪資過濾
+        response = client.get("/jobs?min_salary=40000", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) > 0
+
+        # 測試最高薪資過濾
+        response = client.get("/jobs?max_salary=80000", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) > 0
+
+        # 測試公司 ID 過濾
+        response = client.get(f"/jobs?company_id={test_company.id}", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) > 0
+
+        # 測試職缺類型過濾
+        response = client.get("/jobs?type=full-time", headers=auth_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert len(data["items"]) > 0
 
     def test_create_job_without_optional_fields(
         self, client, test_company, test_job_data, auth_headers
@@ -242,6 +487,62 @@ class TestJobAPI:
             headers=auth_headers,
         )
         assert response.status_code == 404
+
+    def test_job_is_expired(self, test_company, test_user):
+        """測試職缺是否過期"""
+        # 創建一個已過期的職缺
+        expired_job = JobPosting.objects.create(
+            title="Expired Job",
+            description="This job has expired",
+            location="Test Location",
+            min_salary=50000,
+            max_salary=70000,
+            salary_type="annual",
+            required_skills=["Python", "Django"],
+            posting_date=timezone.now() - timedelta(days=30),
+            expiration_date=timezone.now() - timedelta(days=1),  # 昨天過期
+            type="full-time",
+            company=test_company,
+            created_by=test_user,
+            modified_by=test_user,
+        )
+        assert expired_job.is_expired is True
+
+        # 創建一個未過期的職缺
+        active_job = JobPosting.objects.create(
+            title="Active Job",
+            description="This job is still active",
+            location="Test Location",
+            min_salary=50000,
+            max_salary=70000,
+            salary_type="annual",
+            required_skills=["Python", "Django"],
+            posting_date=timezone.now(),
+            expiration_date=timezone.now() + timedelta(days=30),  # 30天後過期
+            type="full-time",
+            company=test_company,
+            created_by=test_user,
+            modified_by=test_user,
+        )
+        assert active_job.is_expired is False
+
+        # 創建一個沒有過期日期的職缺
+        no_expiry_job = JobPosting.objects.create(
+            title="No Expiry Job",
+            description="This job has no expiration date",
+            location="Test Location",
+            min_salary=50000,
+            max_salary=70000,
+            salary_type="annual",
+            required_skills=["Python", "Django"],
+            posting_date=timezone.now(),
+            expiration_date=None,  # 沒有過期日期
+            type="full-time",
+            company=test_company,
+            created_by=test_user,
+            modified_by=test_user,
+        )
+        assert no_expiry_job.is_expired is False
 
 
 # 在測試中使用帶時區的 datetime
