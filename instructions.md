@@ -101,6 +101,7 @@ The system is composed of two primary modules: **Backend API** and **Frontend SP
 -   `title`: string
 -   `description`: string
 -   `location`: string
+-   `salary_type`: string (\*Add)
 -   `salary_range`: string or object
 -   `company_name`: string (immutable once created)
 -   `posting_date`: date
@@ -156,11 +157,3 @@ The system is composed of two primary modules: **Backend API** and **Frontend SP
 ---
 
 These core functionalities lay the foundation for both feature completeness and code evaluation based on quality, maintainability, and architectural decisions.
-
-## Documentation
-
-(to fill in later)
-
-## Current Project Structure
-
-(to fill in later)
