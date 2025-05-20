@@ -32,7 +32,10 @@ export const axiosAPI = async (params: Partial<APIsParams>) => {
 				detail: axiosResult.value.data.details || "",
 			};
 
-			if (axiosResult.value.status === 401) {
+			if (
+				axiosResult.value.status === 401 &&
+				params.url != "token/pair"
+			) {
 				errorAuthHandling();
 				return;
 			}

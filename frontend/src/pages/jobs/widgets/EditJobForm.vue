@@ -35,7 +35,7 @@
 				<VaSelect
 					v-model="formData.type"
 					:label="t('job.type')"
-					:options="typeOptions"
+					:options="jobTypeOptions"
 					:rules="[validators.required]"
 					class="w-full sm:w-1/2"
 					track-by="value"
@@ -82,7 +82,7 @@
 					:rules="[validators.requiredArray]"
 					class="w-full sm:w-1/2"
 					multiple
-					:options="skillOptions"
+					:options="getSkillOptions()"
 					track-by="value"
 				/>
 				<VaInput
@@ -135,9 +135,9 @@ import { useI18n } from "vue-i18n";
 import { type JobPosting } from "@/services/types/jobs";
 import { validators } from "@/services/utils";
 import {
-	getJobTypeOptions,
+	jobTypeOptions,
 	getSkillOptions,
-	getSalaryTypeOptions,
+	salaryTypeOptions,
 } from "@/services/utils/jobOptions";
 
 const { t } = useI18n();
@@ -170,10 +170,6 @@ const formData = ref<Partial<JobPosting>>({
 	apply_url: "",
 	is_active: true,
 });
-
-const typeOptions = getJobTypeOptions();
-const skillOptions = getSkillOptions();
-const salaryTypeOptions = getSalaryTypeOptions();
 
 onMounted(() => {
 	if (props.job) {

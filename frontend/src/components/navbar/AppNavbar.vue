@@ -25,10 +25,12 @@
 			</div>
 		</template>
 		<template #right>
-			<AppNavbarActions
-				class="app-navbar__actions"
-				:is-mobile="isMobile"
-			/>
+			<div class="right">
+				<AppNavbarActions
+					class="app-navbar__actions"
+					:is-mobile="isMobile"
+				/>
+			</div>
 		</template>
 	</VaNavbar>
 </template>
@@ -55,36 +57,62 @@ const { isSidebarMinimized } = storeToRefs(GlobalStore);
 	z-index: 2;
 	.logo {
 		cursor: pointer;
+		transition: font-size 0.2s;
 	}
 
 	@media screen and (max-width: 950px) {
 		.left {
 			width: 100%;
-
 			.logo {
-				font-size: 1.3rem;
+				font-size: 1.1rem;
 			}
 		}
-
 		.app-navbar__actions {
 			display: flex;
-			justify-content: space-between;
+			justify-content: flex-end;
+			width: 100%;
+		}
+	}
+	@media screen and (max-width: 600px) {
+		.left {
+			margin-left: 0.5rem;
+			.logo {
+				font-size: 1rem;
+			}
+		}
+		.right {
+			margin-right: 0.5rem;
+		}
+		.va-navbar {
+			padding-left: 0.2rem;
+			padding-right: 0.2rem;
+			height: 48px;
+		}
+	}
+	@media screen and (max-width: 400px) {
+		.left .logo {
+			font-size: 0.9rem;
 		}
 	}
 }
 
-.left {
+.left,
+.right {
 	display: flex;
 	align-items: center;
-	margin-left: 1rem;
+}
 
+.left {
+	margin-left: 1rem;
 	& > * {
 		margin-right: 1rem;
 	}
-
 	& > *:last-child {
 		margin-right: 0;
 	}
+}
+.right {
+	margin-right: 1rem;
 }
 
 .icon-fade-enter-active,

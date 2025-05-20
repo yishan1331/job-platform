@@ -74,14 +74,12 @@ import { useI18n } from "vue-i18n";
 import { validators } from "../../services/utils";
 import { useAuth } from "@/pages/auth/composables/useAuth";
 import { useUserAuthStore } from "@/stores/user-auth";
-import { User, UserSessions } from "@/services/types/index";
 import { useGlobalStore } from "@/stores/global-store";
 
 const breakpoint = useBreakpoint();
 
 const AuthStore = useUserAuthStore();
-const { defaultPageAccess } = storeToRefs(useUserAuthStore());
-const { isTesting, version } = storeToRefs(useGlobalStore());
+const { version } = storeToRefs(useGlobalStore());
 
 const { t } = useI18n();
 const { validate } = useForm("form");
@@ -89,8 +87,8 @@ const router = useRouter();
 const { init: notify } = useToast();
 
 const formData = reactive({
-	email: isTesting.value ? "test-user3@example.com" : "",
-	password: isTesting.value ? "123456" : "",
+	email: "",
+	password: "",
 });
 
 const submit = async () => {
@@ -98,7 +96,7 @@ const submit = async () => {
 		const _tempFormData = cloneDeep(formData);
 		const { logIn, getAuthMe } = useAuth(_tempFormData);
 		const { statusCode, response, sessions } = await logIn();
-		const _sessions = sessions.value as UserSessions;
+		const _sessions = sessions.value;
 
 		if (statusCode.value != 200) {
 			notify({

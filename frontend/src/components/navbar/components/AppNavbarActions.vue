@@ -1,19 +1,48 @@
 <template>
 	<div class="app-navbar-actions">
-		<LanguageSwitcher />
-
-		<VaButton preset="secondary" color="#fff" @click="goLogout()">
-			<span class="profile-dropdown__anchor min-w-max">
-				<slot />
-				<VaIcon
-					size="20px"
-					class="pr-1"
-					:component="VaIconComponent"
-					:icon="'logout_white'"
-				/>
-			</span>
-			{{ $t(`navbar.logout`) }}
-		</VaButton>
+		<!-- Mobile: dropdown -->
+		<VaDropdown
+			v-if="isMobile"
+			placement="bottom-end"
+			:close-on-content-click="false"
+		>
+			<template #anchor>
+				<VaButton icon="person" preset="secondary" color="#fff" />
+			</template>
+			<div class="dropdown-content p-2 min-w-[120px]">
+				<LanguageSwitcher class="mb-2" />
+				<VaButton
+					preset="secondary"
+					color="primary"
+					@click="goLogout()"
+					class="w-full"
+				>
+					<VaIcon
+						size="20px"
+						class="pr-1"
+						:component="VaIconComponent"
+						:icon="'logout'"
+					/>
+					{{ $t(`navbar.logout`) }}
+				</VaButton>
+			</div>
+		</VaDropdown>
+		<!-- Desktop: 原本顯示 -->
+		<template v-else>
+			<LanguageSwitcher />
+			<VaButton preset="secondary" color="#fff" @click="goLogout()">
+				<span class="profile-dropdown__anchor min-w-max">
+					<slot />
+					<VaIcon
+						size="20px"
+						class="pr-1"
+						:component="VaIconComponent"
+						:icon="'logout_white'"
+					/>
+				</span>
+				{{ $t(`navbar.logout`) }}
+			</VaButton>
+		</template>
 	</div>
 </template>
 
@@ -83,5 +112,16 @@ const goLogout = () => {
 	.fa-github {
 		color: var(--va-on-background-primary);
 	}
+}
+
+.dropdown-content {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+	padding: 0.5rem 0.75rem;
+	min-width: 140px;
 }
 </style>

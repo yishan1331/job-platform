@@ -119,6 +119,20 @@ export const useJobs = (options?: {
 		return { allCompaniesList };
 	};
 
+	const getJobDetail = async (id: string) => {
+		isLoading.value = true;
+		const result = await axiosAPI<JobPosting>({
+			url: `jobs/${id}`,
+			method: "get",
+		});
+
+		statusCode.value = result.statusCode;
+		response.value = result.response.message;
+		isLoading.value = false;
+
+		return result;
+	};
+
 	return {
 		jobs,
 		statusCode,
@@ -132,5 +146,6 @@ export const useJobs = (options?: {
 		update,
 		remove,
 		getCompanies,
+		getJobDetail,
 	};
 };

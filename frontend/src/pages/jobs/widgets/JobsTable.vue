@@ -9,13 +9,24 @@
 		>
 			<template #cell(is_active)="{ rowData }">
 				<VaBadge
-					:text="rowData.is_active ? 'Active' : 'Inactive'"
+					:text="
+						rowData.is_active
+							? $t('job.active')
+							: $t('job.inactive')
+					"
 					:color="rowData.is_active ? 'success' : 'danger'"
 					style="font-size: 18px"
 				/>
 			</template>
 			<template #cell(actions)="{ rowData }">
 				<div class="flex gap-2">
+					<VaButton
+						icon="info"
+						size="small"
+						preset="secondary"
+						@click="$emit('detailData', rowData)"
+						color="success"
+					/>
 					<VaButton
 						icon="edit"
 						size="small"

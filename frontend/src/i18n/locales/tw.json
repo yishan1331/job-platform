@@ -34,6 +34,7 @@
 		"location": "工作地點",
 		"min_salary": "最低薪資",
 		"max_salary": "最高薪資",
+		"salary": "薪資",
 		"salary_type": "薪資類型",
 		"required_skills": "所需技能",
 		"posting_date": "刊登日期",
@@ -43,12 +44,14 @@
 		"typeOptions": {
 			"full_time": "全職",
 			"part_time": "兼職",
-			"internship": "實習"
+			"internship": "實習",
+			"full-time": "全職",
+			"part-time": "兼職"
 		},
 		"salaryTypeOptions": {
-			"annual": "年",
-			"monthly": "月",
-			"hourly": "時"
+			"annual": "年薪",
+			"monthly": "月薪",
+			"hourly": "時薪"
 		},
 		"created_by": "建立者",
 		"modified_by": "修改者",
@@ -60,7 +63,12 @@
 			"scheduled": "已發佈"
 		},
 		"search": "搜尋",
-		"searchPlaceholder": "職缺名稱, 公司名稱, 工作地點, 等"
+		"searchPlaceholder": "職缺名稱, 公司名稱, 工作地點, 等",
+		"apply_now": "立即申請",
+		"active": "啟用",
+		"inactive": "停用",
+		"created_at": "建立時間",
+		"updated_at": "更新時間"
 	},
 	"table": {
 		"add": "新增",
@@ -73,6 +81,7 @@
 		"perPage": "每頁",
 		"addJob": "新增職缺",
 		"editJob": "編輯職缺",
+		"jobDetail": "職缺詳細資料",
 		"beforeEditFormModalClose": "此表單有未儲存的變更，確定要關閉嗎？",
 		"deleteConfirm": "刪除確認",
 		"disableConfirm": "停用確認",

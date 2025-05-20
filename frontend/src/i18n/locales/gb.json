@@ -54,6 +54,7 @@
 		"location": "Location",
 		"min_salary": "Min Salary",
 		"max_salary": "Max Salary",
+		"salary": "Salary",
 		"salary_type": "Salary Type",
 		"required_skills": "Required Skills",
 		"posting_date": "Posting Date",
@@ -64,7 +65,9 @@
 			"full_time": "Full Time",
 			"part_time": "Part Time",
 			"contract": "Contract",
-			"internship": "Internship"
+			"internship": "Internship",
+			"full-time": "Full Time",
+			"part-time": "Part Time"
 		},
 		"salaryTypeOptions": {
 			"annual": "Annual",
@@ -73,7 +76,7 @@
 		},
 		"created_by": "Created By",
 		"modified_by": "Modified By",
-		"is_active": "Is Active",
+		"is_active": "Active status",
 		"created_at": "Created At",
 		"updated_at": "Updated At",
 		"status": "Status",
@@ -83,7 +86,10 @@
 			"scheduled": "Scheduled"
 		},
 		"search": "Search By",
-		"searchPlaceholder": "title, company name, location, etc."
+		"searchPlaceholder": "title, company name, location, etc.",
+		"apply_now": "Apply Now",
+		"active": "Active",
+		"inactive": "Inactive"
 	},
 	"table": {
 		"add": "Add",
@@ -96,6 +102,7 @@
 		"perPage": "Per Page",
 		"addJob": "Add Job",
 		"editJob": "Edit Job",
+		"jobDetail": "Job Detail",
 		"beforeEditFormModalClose": "The form has unsaved changes. Are you sure you want to close it?",
 		"deleteConfirm": "Delete Confirm",
 		"disableConfirm": "Disable Confirm",
