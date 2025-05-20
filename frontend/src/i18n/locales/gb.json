@@ -1,0 +1,118 @@
+{
+	"auth": {
+		"agree": "I agree to",
+		"createAccount": "Create account",
+		"createNewAccount": "Create New Account",
+		"email": "Email",
+		"login": "Login",
+		"password": "Password",
+		"recover_password": "Recover password",
+		"sign_up": "Sign Up",
+		"keep_logged_in": "Keep me logged in",
+		"termsOfUse": "Terms of Use.",
+		"reset_password": "Reset password",
+		"login_timeout": "Login timeout, please log in again",
+		"login_success": "Login successful",
+		"login_failed": "Login failed"
+	},
+	"validation": {
+		"required": "This field is required",
+		"requiredArray": "This field is required",
+		"passwordLength": "Password field must be more than 6 characters and not more than 16 characters",
+		"passwordFormat": "Password field format is invalid, only accept English, numbers and specific symbols ({allowedSymbols})",
+		"confirmpassword": "Password and confirm password must be the same",
+		"email": "Please enter a valid email address"
+	},
+	"404": {
+		"title": "This page’s gone fishing.",
+		"text": "If you feel that it’s not right, please send us a message at ",
+		"back_button": "Back to dashboard"
+	},
+	"dashboard": {
+		"versions": "Versions",
+		"setupRemoteConnections": "Setup Remote Connections",
+		"currentVisitors": "Current Visitors",
+		"navigationLayout": "navigation layout",
+		"topBarButton": "Top Bar",
+		"sideBarButton": "Side Bar"
+	},
+	"language": {
+		"english": "English",
+		"traditional_chinese": "Traditional Chinese"
+	},
+	"sidebar": {
+		"jobs": "Jobs",
+		"settings": "Application settings"
+	},
+	"navbar": {
+		"logout": "Logout"
+	},
+	"job": {
+		"title": "Title",
+		"company_name": "Company Name",
+		"description": "Description",
+		"location": "Location",
+		"min_salary": "Min Salary",
+		"max_salary": "Max Salary",
+		"salary_type": "Salary Type",
+		"required_skills": "Required Skills",
+		"posting_date": "Posting Date",
+		"expiration_date": "Expiration Date",
+		"apply_url": "Apply URL",
+		"type": "Type",
+		"typeOptions": {
+			"full_time": "Full Time",
+			"part_time": "Part Time",
+			"contract": "Contract",
+			"internship": "Internship"
+		},
+		"salaryTypeOptions": {
+			"annual": "Annual",
+			"monthly": "Monthly",
+			"hourly": "Hourly"
+		},
+		"created_by": "Created By",
+		"modified_by": "Modified By",
+		"is_active": "Is Active",
+		"created_at": "Created At",
+		"updated_at": "Updated At",
+		"status": "Status",
+		"statusOptions": {
+			"active": "Active",
+			"expired": "Expired",
+			"scheduled": "Scheduled"
+		},
+		"search": "Search By",
+		"searchPlaceholder": "title, company name, location, etc."
+	},
+	"table": {
+		"add": "Add",
+		"update": "Update",
+		"delete": "Delete",
+		"disable": "Disable",
+		"enable": "Enable",
+		"save": "Save",
+		"cancel": "Cancel",
+		"perPage": "Per Page",
+		"addJob": "Add Job",
+		"editJob": "Edit Job",
+		"beforeEditFormModalClose": "The form has unsaved changes. Are you sure you want to close it?",
+		"deleteConfirm": "Delete Confirm",
+		"disableConfirm": "Disable Confirm",
+		"enableConfirm": "Enable Confirm",
+		"actions": "Actions",
+		"ok": "OK",
+		"success": "Success"
+	},
+	"select": {
+		"categories": "Select up to two conditions",
+		"category": "Select one condition",
+		"search": "Enter search conditions",
+		"fuzzy": "Fuzzy",
+		"normal": "Normal"
+	},
+	"search": {
+		"placeholder": "Search...",
+		"searchModule": "Search data module"
+	}
+}

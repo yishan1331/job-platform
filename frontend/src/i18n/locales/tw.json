@@ -1,0 +1,105 @@
+{
+	"auth": {
+		"agree": "我同意",
+		"createAccount": "建立帳號",
+		"createNewAccount": "建立新帳號",
+		"email": "電子郵件",
+		"login": "登入",
+		"password": "密碼",
+		"recover_password": "恢復密碼",
+		"sign_up": "註冊",
+		"keep_logged_in": "保持登入",
+		"termsOfUse": "使用條款",
+		"reset_password": "重設密碼",
+		"login_timeout": "登入逾時，請重新登入",
+		"login_failed": "登入失敗"
+	},
+	"404": {
+		"title": "此頁面已去釣魚",
+		"text": "如果您覺得這不對，請給我們發送訊息",
+		"back_button": "返回儀表板"
+	},
+	"language": {
+		"english": "英語",
+		"tradionnal_chinese": "繁體中文"
+	},
+	"sidebar": {
+		"jobs": "職缺",
+		"settings": "系統設定"
+	},
+	"job": {
+		"title": "職缺名稱",
+		"company_name": "公司名稱",
+		"description": "職缺描述",
+		"location": "工作地點",
+		"min_salary": "最低薪資",
+		"max_salary": "最高薪資",
+		"salary_type": "薪資類型",
+		"required_skills": "所需技能",
+		"posting_date": "刊登日期",
+		"expiration_date": "到期日期",
+		"apply_url": "申請連結",
+		"type": "職缺類型",
+		"typeOptions": {
+			"full_time": "全職",
+			"part_time": "兼職",
+			"internship": "實習"
+		},
+		"salaryTypeOptions": {
+			"annual": "年",
+			"monthly": "月",
+			"hourly": "時"
+		},
+		"created_by": "建立者",
+		"modified_by": "修改者",
+		"is_active": "是否啟用",
+		"status": "狀態",
+		"statusOptions": {
+			"active": "啟用",
+			"expired": "已到期",
+			"scheduled": "已發佈"
+		},
+		"search": "搜尋",
+		"searchPlaceholder": "職缺名稱, 公司名稱, 工作地點, 等"
+	},
+	"table": {
+		"add": "新增",
+		"update": "更新",
+		"delete": "刪除",
+		"disable": "停用",
+		"enable": "啟用",
+		"save": "儲存",
+		"cancel": "取消",
+		"perPage": "每頁",
+		"addJob": "新增職缺",
+		"editJob": "編輯職缺",
+		"beforeEditFormModalClose": "此表單有未儲存的變更，確定要關閉嗎？",
+		"deleteConfirm": "刪除確認",
+		"disableConfirm": "停用確認",
+		"enableConfirm": "啟用確認",
+		"actions": "操作",
+		"ok": "確定",
+		"success": "成功"
+	},
+	"select": {
+		"categories": "請選擇最多兩個條件",
+		"category": "請選擇一個條件",
+		"search": "請輸入搜尋條件",
+		"fuzzy": "模糊",
+		"normal": "一般"
+	},
+	"validation": {
+		"required": "此欄位必填",
+		"passwordLength": "密碼字段需要超過6個字元且不能超過16個字元",
+		"passwordFormat": "密碼字段格式無效，只接受英文、數字及特定符號({allowedSymbols})",
+		"confirmpassword": "密碼與確認密碼必須一致",
+		"email": "請輸入有效的電子郵件地址"
+	},
+	"navbar": {
+		"logout": "登出系統"
+	},
+	"search": {
+		"placeholder": "搜尋...",
+		"searchModule": "搜尋資料模組"
+	}
+}
