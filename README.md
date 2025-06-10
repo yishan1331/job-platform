@@ -1,4 +1,4 @@
-# TalentLabs 專案設置指南
+# Job Platform 專案設置指南
 
 ## 系統架構
 
